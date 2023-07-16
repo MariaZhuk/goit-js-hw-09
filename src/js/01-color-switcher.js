@@ -4,8 +4,8 @@ const refs = {
     bodyColor: document.querySelector('body'),
 }
 
+const NOTOFICATION_DELAY = 1000; // змінна, яка вказує з яким інтервалом виконувати функцію
 let idInterval = null;
-
 
 function getRandomHexColor() {
   return `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, 0)}`;
@@ -20,7 +20,7 @@ function changeColor() {
 
     idInterval = setInterval(() => {
         refs.bodyColor.style.backgroundColor = getRandomHexColor();
-    }, 1000);
+    }, NOTOFICATION_DELAY);
     
 }
 
