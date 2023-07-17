@@ -1,63 +1,54 @@
 import Notiflix from 'notiflix';
 
-const refs = {
-  delayEl: document.querySelector("input[data-delay]"),
-  stepEl: document.querySelector("input[data-step]"),
-  amountEl: document.querySelector("input[data-amount]"),
-  formEl: document.querySelector(".form"),
+ 
+const formEl = document.querySelector(".form");
+
+formEl.addEventListener("submit", handlerSubmit);
+
+// функція зчитування внесенних значень у інпути та відображення по дії сабміту результатів промісу
+function handlerSubmit(event) {
+  event.preventDefault(); // відмінили дію по замовченню - перезавантаження сторінки
+  
+  // збираємо джанні з інпутів(звертаємося до псевдомасиву який створюється по дії відправлення данних внесенних у інпути )
+  //event.target - те що внесли у інпути
+  //elements - псевдомасив(який зберігає данні які є у інпуті у вигляді масиву)
+  
+  let delay = Number(event.target.elements.delay.value);
+ 
+  let step = Number(event.target.elements.step.value);
+  let amount = Number(event.target.elements.amount.value)
+  
+  for (let position = 1; position <= amount; position += 1) {
+   //виклик функції створення функції у циклу
+    createPromise(position, delay)
+      .then(({ position, delay }) => {
+        Notiflix.Notify.success(`✅ Fulfilled promise ${position} in ${delay}ms`);
+      })
+      .catch(({ position, delay }) => {
+        Notiflix.Notify.failure(`❌ Rejected promise ${position} in ${delay}ms`);
+      });
+    delay += step;
+  }
 }
 
-refs.formEl.addEventListener("submit", handlerSubmit);
-
-function handlerSubmit(event) { 
-  event.preventDefault();
-  let delay = Number(refs.delayEl.value);
-  let step = Number(refs.stepEl.value);
-  let amount = Number(refs.amountEl.value);
-
-  
-  for (let position = 1; position <= amount; position += 1) { 
-    if (position === 1) { 
-       setTimeout(() => {
-        createPromise(position, delay)
-          .then(({ position, delay }) => {
-            Notiflix.Notify.success(`✅ Fulfilled promise ${position} in ${delay}ms`);
-          })
-          .catch(({ position, delay }) => {
-            Notiflix.Notify.failure(`❌ Rejected promise ${position} in ${delay}ms`);
-          });
-      }, delay)
-    }
-    if (position > 1) {
-      setTimeout(() => {
-        delay += step;
-        createPromise(position, delay)
-          .then(({ position, delay }) => {
-            Notiflix.Notify.success(`✅ Fulfilled promise ${position} in ${delay}ms`);
-          })
-          .catch(({ position, delay }) => {
-            Notiflix.Notify.failure(`❌ Rejected promise ${position} in ${delay}ms`);
-          });
-      }, delay)
-    } 
-    }
-  }
- function createPromise(position, delay) {
+// Функція створення промісу
+  function createPromise(position, delay) {
    
     const shouldResolve = Math.random() > 0.3;
    
     const promise = new Promise((resolve, reject) => {
-    if (shouldResolve) {
-      resolve({position, delay});
-    } else {
-      reject({position, delay});
-    }
-   }, delay);
-  return promise;
-    
-   }
+      setTimeout(() => {
+        if (shouldResolve) {
+          resolve({ position, delay });
+        } else {
+          reject({ position, delay });
+        }
+      }, delay);
+    });
+    return promise;//повернення промису
+  }
    
-  
+
 
 
 

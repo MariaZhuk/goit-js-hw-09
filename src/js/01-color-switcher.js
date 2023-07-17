@@ -4,6 +4,8 @@ const refs = {
     bodyColor: document.querySelector('body'),
 }
 
+const btnState = true;
+
 const NOTOFICATION_DELAY = 1000; // змінна, яка вказує з яким інтервалом виконувати функцію
 let idInterval = null;
 
@@ -15,8 +17,8 @@ refs.startBtn.addEventListener("click", changeColor);
 
 
 function changeColor() { 
-    refs.startBtn.disabled = true;
-    refs.stopBtn.disabled = false
+    
+    changeStartStopBtnState(btnState);
 
     idInterval = setInterval(() => {
         refs.bodyColor.style.backgroundColor = getRandomHexColor();
@@ -27,9 +29,16 @@ function changeColor() {
 refs.stopBtn.addEventListener("click", changeColorStop);
 
 function changeColorStop() { 
-    
-    refs.stopBtn.disabled = true;
-    refs.startBtn.disabled = false
+
+    changeStartStopBtnState(!btnState);
 
     clearInterval(idInterval);
 }
+
+// Функція поведінки кнопок старт стоп - активні неактивні
+function changeStartStopBtnState(value) { 
+
+    refs.startBtn.disabled = value;
+    refs.stopBtn.disabled = !value;
+}
+
